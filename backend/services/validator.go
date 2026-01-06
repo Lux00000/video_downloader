@@ -17,9 +17,8 @@ const (
 )
 
 var (
-	ErrInvalidURL      = errors.New("invalid URL")
-	ErrUnsupportedURL  = errors.New("unsupported platform")
-	ErrDurationTooLong = errors.New("video duration exceeds maximum allowed")
+	ErrInvalidURL     = errors.New("invalid URL")
+	ErrUnsupportedURL = errors.New("unsupported platform")
 )
 
 var platformPatterns = map[Platform]*regexp.Regexp{
@@ -28,14 +27,10 @@ var platformPatterns = map[Platform]*regexp.Regexp{
 	PlatformTikTok:    regexp.MustCompile(`(?i)(tiktok\.com|vm\.tiktok\.com)`),
 }
 
-type Validator struct {
-	maxDuration int
-}
+type Validator struct{}
 
-func NewValidator(maxDuration int) *Validator {
-	return &Validator{
-		maxDuration: maxDuration,
-	}
+func NewValidator() *Validator {
+	return &Validator{}
 }
 
 func (v *Validator) ValidateURL(rawURL string) (Platform, error) {
@@ -55,10 +50,4 @@ func (v *Validator) ValidateURL(rawURL string) (Platform, error) {
 	return PlatformUnknown, ErrUnsupportedURL
 }
 
-func (v *Validator) ValidateDuration(duration int) error {
-	if duration > v.maxDuration {
-		return ErrDurationTooLong
-	}
-	return nil
-}
 

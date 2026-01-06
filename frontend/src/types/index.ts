@@ -16,7 +16,6 @@ export interface VideoInfo {
 
 export interface ConfigResponse {
   authRequired: boolean;
-  maxDuration: number;
   maxConcurrent: number;
   platforms: string[];
 }

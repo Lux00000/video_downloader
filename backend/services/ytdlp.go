@@ -88,9 +88,6 @@ func (s *YtDlpService) Analyze(ctx context.Context, url string) (*VideoInfo, err
 	}
 
 	duration := int(info.Duration)
-	if err := s.validator.ValidateDuration(duration); err != nil {
-		return nil, err
-	}
 
 	formats := s.parseFormats(info.Formats)
 

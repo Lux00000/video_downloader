@@ -6,12 +6,11 @@ import (
 )
 
 type Config struct {
-	Port           string
-	AuthRequired   bool
-	MaxConcurrent  int
-	MaxDuration    int
-	RateLimitRPM   int
-	YtDlpPath      string
+	Port          string
+	AuthRequired  bool
+	MaxConcurrent int
+	RateLimitRPM  int
+	YtDlpPath     string
 }
 
 func Load() *Config {
@@ -19,7 +18,6 @@ func Load() *Config {
 		Port:          getEnv("PORT", "8080"),
 		AuthRequired:  getEnvBool("AUTH_REQUIRED", false),
 		MaxConcurrent: getEnvInt("MAX_CONCURRENT", 3),
-		MaxDuration:   getEnvInt("MAX_DURATION", 3600),
 		RateLimitRPM:  getEnvInt("RATE_LIMIT_RPM", 10),
 		YtDlpPath:     getEnv("YTDLP_PATH", "/usr/local/bin/yt-dlp"),
 	}

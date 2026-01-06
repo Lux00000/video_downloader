@@ -17,7 +17,6 @@ func NewConfigHandler(cfg *config.Config) *ConfigHandler {
 
 type ConfigResponse struct {
 	AuthRequired  bool     `json:"authRequired"`
-	MaxDuration   int      `json:"maxDuration"`
 	MaxConcurrent int      `json:"maxConcurrent"`
 	Platforms     []string `json:"platforms"`
 }
@@ -25,7 +24,6 @@ type ConfigResponse struct {
 func (h *ConfigHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	response := ConfigResponse{
 		AuthRequired:  h.cfg.AuthRequired,
-		MaxDuration:   h.cfg.MaxDuration,
 		MaxConcurrent: h.cfg.MaxConcurrent,
 		Platforms:     []string{"youtube", "instagram", "tiktok"},
 	}

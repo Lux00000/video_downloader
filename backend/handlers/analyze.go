@@ -75,9 +75,6 @@ func (h *AnalyzeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case services.ErrUnsupportedURL:
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "Unsupported platform. Supported: YouTube, Instagram, TikTok"})
-		case services.ErrDurationTooLong:
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Video duration exceeds maximum allowed (1 hour)"})
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to analyze video. Please check the URL and try again."})

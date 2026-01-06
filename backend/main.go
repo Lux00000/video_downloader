@@ -32,12 +32,11 @@ func main() {
 		"port", cfg.Port,
 		"authRequired", cfg.AuthRequired,
 		"maxConcurrent", cfg.MaxConcurrent,
-		"maxDuration", cfg.MaxDuration,
 		"rateLimitRPM", cfg.RateLimitRPM,
 	)
 
 	// Initialize services
-	validator := services.NewValidator(cfg.MaxDuration)
+	validator := services.NewValidator()
 	ytdlp := services.NewYtDlpService(cfg.YtDlpPath, validator)
 	semaphore := services.NewSemaphore(cfg.MaxConcurrent)
 	rateLimiter := middleware.NewRateLimiter(cfg.RateLimitRPM)
