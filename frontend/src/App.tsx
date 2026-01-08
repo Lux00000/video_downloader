@@ -49,7 +49,7 @@ function App() {
     setDownloadProgress(0);
 
     try {
-      await downloadFile(currentUrl, selectedFormat.id, (progress) => {
+      await downloadFile(currentUrl, selectedFormat.id, selectedFormat.type, (progress) => {
         setDownloadProgress(progress);
       });
       

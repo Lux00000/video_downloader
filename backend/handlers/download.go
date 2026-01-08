@@ -37,6 +37,7 @@ func (h *DownloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	videoURL := r.URL.Query().Get("url")
 	formatID := r.URL.Query().Get("format_id")
+	formatType := r.URL.Query().Get("type") // "audio", "video", or "video_only"
 
 	if videoURL == "" {
 		http.Error(w, `{"error": "URL parameter is required"}`, http.StatusBadRequest)
@@ -54,6 +55,9 @@ func (h *DownloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if formatID == "" {
 		formatID = "best"
 	}
+
+	// Check if this is an audio-only download
+	isAudioOnly := formatType == "audio"
 
 	// Try to acquire semaphore (limit concurrent downloads)
 	if !h.semaphore.TryAcquire() {
@@ -77,7 +81,7 @@ func (h *DownloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Download to temp file first (this ensures proper merging for video+audio formats)
-	tempFile, filename, err := h.ytdlp.DownloadToFile(ctx, decodedURL, formatID, tempDir)
+	tempFile, filename, err := h.ytdlp.DownloadToFile(ctx, decodedURL, formatID, tempDir, isAudioOnly)
 	if err != nil {
 		h.logger.Error("Download failed", "url", decodedURL, "error", err, "duration", time.Since(startTime))
 		http.Error(w, `{"error": "Download failed"}`, http.StatusInternalServerError)

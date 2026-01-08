@@ -154,7 +154,8 @@ func (s *YtDlpService) parseFormats(ytFormats []ytdlpFormat) []Format {
 }
 
 // DownloadToFile downloads video to a temp file and returns the file path and filename
-func (s *YtDlpService) DownloadToFile(ctx context.Context, url, formatID, tempDir string) (filePath string, filename string, err error) {
+// isAudioOnly should be true when downloading audio-only formats
+func (s *YtDlpService) DownloadToFile(ctx context.Context, url, formatID, tempDir string, isAudioOnly bool) (filePath string, filename string, err error) {
 	_, err = s.validator.ValidateURL(url)
 	if err != nil {
 		return "", "", err
@@ -179,6 +180,14 @@ func (s *YtDlpService) DownloadToFile(ctx context.Context, url, formatID, tempDi
 		args = append(args,
 			"--merge-output-format", "mp4",
 			"--postprocessor-args", "ffmpeg:-c:v copy -c:a aac -strict experimental",
+		)
+	} else if isAudioOnly {
+		// For audio-only formats, convert to m4a for better compatibility
+		// m4a is widely supported (iTunes, Windows Media Player, Soundpad, etc.)
+		args = append(args,
+			"--extract-audio",       // Extract/process as audio
+			"--audio-format", "m4a", // Convert to m4a (AAC codec)
+			"--audio-quality", "0",  // Best quality
 		)
 	}
 
@@ -259,7 +268,7 @@ func (s *YtDlpService) GetBestFormats(formats []Format) []Format {
 			ID:      bestAudio.ID,
 			Type:    "audio",
 			Quality: "Лучшее аудио (" + bestAudio.Quality + ")",
-			Ext:     bestAudio.Ext,
+			Ext:     "m4a", // Always convert to m4a for compatibility
 			Size:    bestAudio.Size,
 		})
 	}

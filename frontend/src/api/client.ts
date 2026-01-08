@@ -36,11 +36,14 @@ export async function analyzeUrl(url: string): Promise<VideoInfo> {
   return handleResponse<VideoInfo>(response);
 }
 
-export function getDownloadUrl(url: string, formatId: string): string {
+export function getDownloadUrl(url: string, formatId: string, formatType?: string): string {
   const params = new URLSearchParams({
     url: url,
     format_id: formatId,
   });
+  if (formatType) {
+    params.set('type', formatType);
+  }
   return `${API_BASE}/download?${params.toString()}`;
 }
 
@@ -56,9 +59,10 @@ export function getThumbnailUrl(originalUrl: string): string {
 export async function downloadFile(
   url: string,
   formatId: string,
+  formatType?: string,
   onProgress?: (progress: number) => void
 ): Promise<void> {
-  const downloadUrl = getDownloadUrl(url, formatId);
+  const downloadUrl = getDownloadUrl(url, formatId, formatType);
   
   const response = await fetch(downloadUrl);
   
